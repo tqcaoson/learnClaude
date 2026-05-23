@@ -1,0 +1,15 @@
+/vendor/
+/node_modules/
+/.env
+/.env.*.php
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/public/hot
+/public/storage
+*.log
+.DS_Store
+.env.local
+.env.*.local
+/bootstrap/cache/
