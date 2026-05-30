@@ -7,17 +7,17 @@ use Illuminate\Pagination\Paginator;
 
 class PostRepository
 {
-    public function findById(int $id): ?Post
+    public function findById($id): ?Post
     {
         return Post::find($id);
     }
 
-    public function findByIdWithRelations(int $id): ?Post
+    public function findByIdWithRelations($id): ?Post
     {
         return Post::with(['user', 'comments.user'])->find($id);
     }
 
-    public function getPaginatedPublished(int $perPage = 25)
+    public function getPaginatedPublished($perPage = 25)
     {
         return Post::where('status', 'published')
             ->with('user')
@@ -25,7 +25,7 @@ class PostRepository
             ->paginate($perPage);
     }
 
-    public function getUserPosts(int $userId, int $perPage = 25)
+    public function getUserPosts($userId, $perPage = 25)
     {
         return Post::where('user_id', $userId)
             ->with('user')

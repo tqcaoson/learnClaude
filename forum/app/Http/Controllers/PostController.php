@@ -26,7 +26,7 @@ class PostController extends Controller
         return view('posts.index', compact('posts'));
     }
 
-    public function show(int $id): View
+    public function show($id): View
     {
         $post = $this->postRepository->findByIdWithRelations($id);
 
@@ -48,14 +48,14 @@ class PostController extends Controller
             $dto = PostDTO::fromRequest($request);
             $post = $this->createPostAction->execute($dto, auth()->user());
 
-            return redirect("/posts/{$post->id}")
+            return redirect()->route("posts.show", ["id" => $post->id])
                 ->with('success', 'Post created successfully! 🎉');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
     }
 
-    public function edit(int $id): View
+    public function edit($id): View
     {
         $post = $this->postRepository->findById($id);
 
@@ -68,7 +68,7 @@ class PostController extends Controller
         return view('posts.edit', compact('post'));
     }
 
-    public function update(PostRequest $request, int $id)
+    public function update(PostRequest $request, $id)
     {
         $post = $this->postRepository->findById($id);
 
@@ -82,14 +82,14 @@ class PostController extends Controller
             $dto = PostDTO::fromRequest($request);
             $post = $this->updatePostAction->execute($dto, $post);
 
-            return redirect("/posts/{$post->id}")
-                ->with('success', 'Post updated successfully! ✨');
+            return redirect()->route("posts.show", ["id" => $post->id])
+                ->with('success', 'Post updated successfully! ✏️');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
     }
 
-    public function delete(int $id)
+    public function delete($id)
     {
         $post = $this->postRepository->findById($id);
 
@@ -102,7 +102,7 @@ class PostController extends Controller
         try {
             $this->deletePostAction->execute($post);
 
-            return redirect('/posts')->with('success', 'Post deleted successfully! 🗑️');
+            return redirect()->route('posts.index')->with('success', 'Post deleted successfully! 🗑️');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
