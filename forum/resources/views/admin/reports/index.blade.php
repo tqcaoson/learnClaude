@@ -1,6 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Reports - Admin')
+@section('page-title', 'Reports - Admin')
 
 @section('content')
 <h3 class="mb-4">🚨 Reports Management</h3>

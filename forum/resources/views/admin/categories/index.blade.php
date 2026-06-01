@@ -1,6 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Admin - Categories')
+@section('page-title', 'Admin - Categories')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">

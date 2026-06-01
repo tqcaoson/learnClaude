@@ -1,6 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Groups Management - Admin')
+@section('page-title', 'Groups Management - Admin')
 
 @section('content')
 <h3 class="mb-4">👥 Groups Management</h3>

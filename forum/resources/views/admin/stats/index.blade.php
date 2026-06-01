@@ -1,6 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Admin Statistics')
+@section('page-title', 'Statistics')
+@section('breadcrumb')
+    <li class="breadcrumb-item active">Statistics</li>
+@endsection
 
 @section('content')
 <div class="container-fluid">
@@ -214,6 +218,7 @@
     </div>
 </div>
 
+@section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 const postsData = @json($postsPerDay);
@@ -317,4 +322,5 @@ new Chart(document.getElementById('tagsChart'), {
 });
 @endif
 </script>
+@endsection
 @endsection

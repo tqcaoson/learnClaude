@@ -1,105 +1,143 @@
 @extends('layouts.app')
 
-@section('title', 'Community Forum — Home')
+@section('title', 'Community Forum — Bài Viết Mới Nhất')
 
 @section('content')
+<div class="content-grid">
 
-{{-- ===== Hero ===== --}}
-<div class="p-4 p-md-5 mb-4 rounded-3 text-white" style="background: linear-gradient(135deg,#1a73e8 0%,#0d47a1 100%);">
-    <div class="py-2">
-        <h1 class="display-6 fw-bold">📚 Community Forum</h1>
-        <p class="col-md-9 fs-5 mb-3">A place to share knowledge, ask questions, and connect with fellow learners. Join thousands of members and start the conversation today.</p>
-        @guest
-            <a href="{{ route('auth.register') }}" class="btn btn-light btn-lg fw-semibold me-2">🚀 Join the Discussion</a>
-            <a href="{{ route('auth.login') }}" class="btn btn-outline-light btn-lg">🔐 Login</a>
-        @else
-            <a href="{{ route('posts.create') }}" class="btn btn-light btn-lg fw-semibold me-2">✍️ Create a Post</a>
-            <a href="{{ route('posts.index') }}" class="btn btn-outline-light btn-lg">📰 Browse Posts</a>
-        @endguest
-    </div>
-</div>
+    {{-- ===== LEFT: Post list ===== --}}
+    <div class="main-col">
 
-{{-- ===== Stats ===== --}}
-<div class="row g-3 mb-4">
-    <div class="col-4">
-        <div class="card text-center border-0 shadow-sm h-100">
-            <div class="card-body py-3">
-                <div class="fs-2 fw-bold text-primary">{{ number_format($stats['posts']) }}</div>
-                <div class="text-muted small">📰 Posts</div>
+        {{-- Section header --}}
+        <div class="section-header">
+            <h2><i class="bi bi-clock-history me-2 text-primary"></i>Bài Viết Mới Nhất</h2>
+            <div class="d-flex align-items-center gap-2">
+                @auth
+                <a href="{{ route('posts.create') }}" class="btn btn-sm btn-primary" style="font-size:0.82rem;">
+                    <i class="bi bi-pencil-square me-1"></i>Viết bài
+                </a>
+                @endauth
+                <a href="{{ route('posts.index') }}" class="btn btn-sm btn-outline-secondary" style="font-size:0.82rem;">Xem tất cả →</a>
             </div>
         </div>
-    </div>
-    <div class="col-4">
-        <div class="card text-center border-0 shadow-sm h-100">
-            <div class="card-body py-3">
-                <div class="fs-2 fw-bold text-success">{{ number_format($stats['users']) }}</div>
-                <div class="text-muted small">👤 Members</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-4">
-        <div class="card text-center border-0 shadow-sm h-100">
-            <div class="card-body py-3">
-                <div class="fs-2 fw-bold text-warning">{{ number_format($stats['categories']) }}</div>
-                <div class="text-muted small">🗂️ Categories</div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="row g-4">
-    {{-- ===== Latest Posts ===== --}}
-    <div class="col-lg-7">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0">🕒 Latest Posts</h4>
-            <a href="{{ route('posts.index') }}" class="btn btn-sm btn-outline-primary">View All →</a>
-        </div>
-
+        {{-- Post list --}}
         @forelse($latestPosts as $post)
-            <div class="card post-item shadow-sm mb-2">
-                <div class="card-body py-3">
-                    <h6 class="card-title mb-1">
-                        <a href="{{ route('posts.show', $post->id) }}" class="text-decoration-none text-dark fw-semibold">
-                            {{ $post->title }}
-                        </a>
-                    </h6>
-                    <div class="d-flex align-items-center gap-2 text-muted small">
-                        <span>👤 {{ $post->user->name }}</span>
-                        <span>·</span>
-                        <span>📅 {{ $post->created_at->diffForHumans() }}</span>
-                        <span>·</span>
-                        <span>👁️ {{ $post->views_count }} views</span>
-                    </div>
-                    <p class="card-text text-secondary small mb-0 mt-1">{{ Str::limit($post->content, 120) }}</p>
+        <div class="post-card">
+            <div class="post-avatar">
+                {{ strtoupper(substr($post->user->name ?? '?', 0, 2)) }}
+            </div>
+            <div class="post-body">
+                <div class="post-author-row">
+                    <a href="{{ \Illuminate\Support\Facades\Route::has('profile.show') ? route('profile.show', $post->user_id) : '#' }}">
+                        {{ $post->user->name ?? 'Unknown' }}
+                    </a>
+                    <span class="mx-1">·</span>
+                    {{ $post->created_at->diffForHumans() }}
+                    @if($post->category ?? null)
+                        <span class="mx-1">·</span>
+                        <span class="post-tag">{{ $post->category->name }}</span>
+                    @endif
+                </div>
+                <a href="{{ route('posts.show', $post->id) }}" class="post-title">{{ $post->title }}</a>
+                <div class="post-excerpt">{{ Str::limit(strip_tags($post->content), 150) }}</div>
+                <div class="post-meta">
+                    <span><i class="bi bi-eye me-1"></i>{{ number_format($post->views_count ?? 0) }}</span>
+                    <span><i class="bi bi-chat me-1"></i>{{ $post->comments_count ?? 0 }}</span>
+                    @if(($post->tags ?? collect())->count())
+                        @foreach($post->tags->take(3) as $tag)
+                            <span class="post-tag">{{ $tag->name }}</span>
+                        @endforeach
+                    @endif
                 </div>
             </div>
+            <div class="post-vote">
+                <button class="vote-btn"><i class="bi bi-chevron-up"></i></button>
+                <span class="vote-count">{{ $post->reactions_count ?? 0 }}</span>
+            </div>
+        </div>
         @empty
-            <div class="alert alert-info">No posts yet. Be the first to share!</div>
+        <div class="post-card justify-content-center text-muted" style="font-size:0.875rem;">
+            Chưa có bài viết nào. Hãy là người đầu tiên chia sẻ!
+        </div>
         @endforelse
+
+        {{-- Stats row --}}
+        <div class="row g-2 mt-2">
+            <div class="col-4">
+                <div class="text-center p-3 bg-white rounded border" style="font-size:0.82rem;">
+                    <div class="fw-bold text-primary fs-5">{{ number_format($stats['posts']) }}</div>
+                    <div class="text-muted">Bài viết</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="text-center p-3 bg-white rounded border" style="font-size:0.82rem;">
+                    <div class="fw-bold text-success fs-5">{{ number_format($stats['users']) }}</div>
+                    <div class="text-muted">Thành viên</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="text-center p-3 bg-white rounded border" style="font-size:0.82rem;">
+                    <div class="fw-bold text-warning fs-5">{{ number_format($stats['categories']) }}</div>
+                    <div class="text-muted">Chủ đề</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    {{-- ===== Popular Categories ===== --}}
-    <div class="col-lg-5">
-        <h4 class="mb-3">🗂️ Categories</h4>
-        @forelse($categories as $category)
-            <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                <span class="fw-medium">{{ $category->name }}</span>
-                <span class="badge bg-secondary rounded-pill">{{ $category->boards_count }} boards</span>
-            </div>
-        @empty
-            <p class="text-muted">No categories yet.</p>
-        @endforelse
+    {{-- ===== RIGHT: Sidebar ===== --}}
+    <aside class="sidebar-right">
 
+        {{-- CTA for guests --}}
         @guest
-            <div class="card mt-4 border-primary">
-                <div class="card-body text-center">
-                    <h5 class="card-title">🎉 Join the community</h5>
-                    <p class="card-text text-muted small">Create an account to post, comment, and connect with others.</p>
-                    <a href="{{ route('auth.register') }}" class="btn btn-primary w-100">📝 Register for Free</a>
-                </div>
-            </div>
+        <div class="cta-banner">
+            <h5>Tham gia cộng đồng</h5>
+            <p>Đăng ký để chia sẻ bài viết, bình luận và kết nối với các thành viên khác.</p>
+            <a href="{{ route('auth.register') }}" class="btn btn-light btn-sm w-100 fw-semibold mb-1">Đăng ký miễn phí</a>
+            <a href="{{ route('auth.login') }}" class="btn btn-outline-light btn-sm w-100" style="font-size:0.8rem;">Đã có tài khoản? Đăng nhập</a>
+        </div>
         @endguest
-    </div>
-</div>
 
+        {{-- Câu hỏi mới nhất --}}
+        <div class="sidebar-card">
+            <div class="sidebar-card-header"><i class="bi bi-question-circle me-1"></i>Chủ Đề Mới Nhất</div>
+            <div class="sidebar-card-body">
+                @forelse($categories as $category)
+                <a href="{{ route('categories.index') }}" class="sidebar-item">
+                    <span>{{ $category->name }}</span>
+                    <span class="sidebar-badge">{{ $category->boards_count }}</span>
+                </a>
+                @empty
+                <div class="px-3 py-2 text-muted" style="font-size:0.82rem;">Chưa có chủ đề.</div>
+                @endforelse
+            </div>
+        </div>
+
+        {{-- Quick links --}}
+        <div class="sidebar-card">
+            <div class="sidebar-card-header"><i class="bi bi-link-45deg me-1"></i>Liên Kết Nhanh</div>
+            <div class="sidebar-card-body">
+                <a href="{{ route('posts.index') }}" class="sidebar-item">
+                    <span><i class="bi bi-file-text me-2 text-muted"></i>Tất cả bài viết</span>
+                </a>
+                @if(\Illuminate\Support\Facades\Route::has('groups.index'))
+                <a href="{{ route('groups.index') }}" class="sidebar-item">
+                    <span><i class="bi bi-people me-2 text-muted"></i>Nhóm thảo luận</span>
+                </a>
+                @endif
+                @if(\Illuminate\Support\Facades\Route::has('search.index'))
+                <a href="{{ route('search.index') }}" class="sidebar-item">
+                    <span><i class="bi bi-search me-2 text-muted"></i>Tìm kiếm</span>
+                </a>
+                @endif
+                @auth
+                <a href="{{ route('posts.create') }}" class="sidebar-item">
+                    <span><i class="bi bi-pencil-square me-2 text-primary"></i>Viết bài mới</span>
+                </a>
+                @endauth
+            </div>
+        </div>
+
+    </aside>
+</div>
 @endsection
