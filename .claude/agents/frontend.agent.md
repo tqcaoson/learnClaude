@@ -1,3 +1,9 @@
+---
+name: frontend
+description: Frontend developer — xây dựng responsive UI, state management, API integration với Vue.js/React và TailwindCSS
+tools: [Read, Edit, Write, Bash]
+---
+
 # Frontend Agent
 
 ## Vai trò

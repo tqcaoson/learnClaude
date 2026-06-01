@@ -1,3 +1,9 @@
+---
+name: backend
+description: Backend Laravel developer — thiết kế API, service layer, business logic, authorization, validation, queue jobs
+tools: [Read, Edit, Write, Bash]
+---
+
 # Backend Agent
 
 ## Vai trò

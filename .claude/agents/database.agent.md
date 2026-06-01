@@ -1,3 +1,9 @@
+---
+name: database
+description: Database architect — thiết kế schema, tối ưu index/query, migration strategy, tránh N+1, soft delete
+tools: [Read, Edit, Write, Bash]
+---
+
 # Database Agent
 
 ## Vai trò

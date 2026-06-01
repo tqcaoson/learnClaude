@@ -1,3 +1,9 @@
+---
+name: devops
+description: DevOps engineer — Docker, CI/CD pipeline, queue workers, monitoring, logging, zero-downtime deployment
+tools: [Read, Edit, Write, Bash]
+---
+
 # DevOps Agent
 
 ## Vai trò

@@ -1,3 +1,9 @@
+---
+name: moderation
+description: Content moderation — report workflow, content decisions, warning system, audit log, restore mechanism
+tools: [Read, Edit, Write, Bash]
+---
+
 # Moderation Agent
 
 ## Vai trò

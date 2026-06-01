@@ -1,3 +1,9 @@
+---
+name: security
+description: Security reviewer — kiểm tra SQL injection, XSS, CSRF, broken access control, rate limiting trên mọi tính năng
+tools: [Read, Edit, Write, Bash]
+---
+
 # Security Agent
 
 ## Vai trò
