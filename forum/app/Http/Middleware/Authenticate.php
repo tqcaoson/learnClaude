@@ -10,7 +10,7 @@ class Authenticate
     public function handle(Request $request, Closure $next)
     {
         if (!auth()->check()) {
-            return redirect('/login');
+            return redirect()->route('auth.login');
         }
 
         return $next($request);

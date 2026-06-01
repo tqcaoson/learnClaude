@@ -32,5 +32,6 @@ class Kernel extends HttpKernel
         'auth' => \App\Http\Middleware\Authenticate::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'rate_limit' => \App\Http\Middleware\RateLimitLogin::class,
+        'role' => \App\Http\Middleware\EnsureRole::class,
     ];
 }

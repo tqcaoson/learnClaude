@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Middleware\RateLimitLogin;
 use Illuminate\Support\Facades\Route;
@@ -12,9 +13,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return redirect()->route('posts.index');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 /*
 |--------------------------------------------------------------------------
@@ -113,3 +112,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/comments/{id}', [CommentController::class, 'delete'])
         ->name('comments.delete');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Additional Feature Routes
+|--------------------------------------------------------------------------
+*/
+
+require __DIR__.'/phase1.php';
+require __DIR__.'/phase2.php';
+require __DIR__.'/phase3.php';
+require __DIR__.'/phase4.php';

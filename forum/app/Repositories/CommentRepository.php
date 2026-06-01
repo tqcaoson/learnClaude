@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Comment;
+use Illuminate\Database\Eloquent\Collection;
 
 class CommentRepository
 {
@@ -27,5 +28,18 @@ class CommentRepository
     public function delete(Comment $comment): bool
     {
         return $comment->delete();
+    }
+
+    public function getReplies(int $commentId): Collection
+    {
+        return Comment::where('parent_id', $commentId)
+            ->with('user')
+            ->oldest()
+            ->get();
+    }
+
+    public function findByIdWithUser(int $id): ?Comment
+    {
+        return Comment::with('user')->find($id);
     }
 }

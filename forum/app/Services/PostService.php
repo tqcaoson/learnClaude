@@ -15,21 +15,38 @@ class PostService
 
     public function create(PostDTO $dto, User $user): Post
     {
-        return $this->postRepository->create([
+        $data = [
             'user_id' => $user->id,
             'title' => $dto->title,
             'content' => $dto->content,
             'status' => $dto->status,
-        ]);
+        ];
+
+        if ($dto->boardId !== null) {
+            $data['board_id'] = $dto->boardId;
+        }
+
+        if ($dto->featuredImagePath !== null) {
+            $data['featured_image'] = $dto->featuredImagePath;
+        }
+
+        return $this->postRepository->create($data);
     }
 
     public function update(PostDTO $dto, Post $post): Post
     {
-        return $this->postRepository->update($post, [
+        $data = [
             'title' => $dto->title,
             'content' => $dto->content,
             'status' => $dto->status,
-        ]);
+            'board_id' => $dto->boardId,
+        ];
+
+        if ($dto->featuredImagePath !== null) {
+            $data['featured_image'] = $dto->featuredImagePath;
+        }
+
+        return $this->postRepository->update($post, $data);
     }
 
     public function delete(Post $post): bool

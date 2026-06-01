@@ -17,6 +17,10 @@ class PostRequest extends FormRequest
             'title' => ['required', 'string', 'min:3', 'max:255'],
             'content' => ['required', 'string', 'min:10'],
             'status' => ['required', 'in:published,draft'],
+            'featured_image' => ['nullable', 'image', 'max:2048'],
+            'tags' => ['nullable', 'array', 'max:10'],
+            'tags.*' => ['string', 'max:50'],
+            'board_id' => ['nullable', 'integer', 'exists:boards,id'],
         ];
     }
 

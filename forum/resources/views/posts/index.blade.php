@@ -34,11 +34,12 @@
                             </a>
                         </h5>
                         <p class="card-text text-muted small mb-2">
-                            <strong>👤 {{ $post->user->name }}</strong> 
+                            <strong>👤 {{ $post->user->name }}</strong>
                             on {{ $post->created_at->format('M d, Y') }}
                             @if($post->created_at->diffInMinutes(now()) < 60)
                                 <span class="badge bg-info">Just now</span>
                             @endif
+                            &nbsp;·&nbsp; 👁️ {{ number_format($post->views_count) }} views
                         </p>
                     </div>
                     @if($post->isDraft())

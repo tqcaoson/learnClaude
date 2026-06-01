@@ -14,12 +14,12 @@ class PostPolicy
 
     public function update(User $user, Post $post): bool
     {
-        return $user->id === $post->user_id;
+        return $user->id === $post->user_id || $user->isModeratorOrAdmin();
     }
 
     public function delete(User $user, Post $post): bool
     {
-        return $user->id === $post->user_id;
+        return $user->id === $post->user_id || $user->isModeratorOrAdmin();
     }
 
     public function view(User $user, Post $post): bool

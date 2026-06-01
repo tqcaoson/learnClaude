@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Actions\Post\CreatePostAction;
 use App\Actions\Post\DeletePostAction;
+use App\Actions\Post\IncrementPostViewsAction;
 use App\Actions\Post\UpdatePostAction;
 use App\DTOs\PostDTO;
 use App\Http\Requests\PostRequest;
-use App\Models\Post;
+use App\Models\Board;
 use App\Repositories\PostRepository;
 use Illuminate\View\View;
 
@@ -18,6 +19,7 @@ class PostController extends Controller
         private CreatePostAction $createPostAction,
         private UpdatePostAction $updatePostAction,
         private DeletePostAction $deletePostAction,
+        private IncrementPostViewsAction $incrementPostViewsAction,
     ) {}
 
     public function index(): View
@@ -34,21 +36,25 @@ class PostController extends Controller
             abort(404);
         }
 
+        $this->incrementPostViewsAction->execute($post->id);
+
         return view('posts.show', compact('post'));
     }
 
     public function create(): View
     {
-        return view('posts.create');
+        $boards = Board::with('category')->orderBy('name')->get();
+        return view('posts.create', compact('boards'));
     }
 
     public function store(PostRequest $request)
     {
         try {
             $dto = PostDTO::fromRequest($request);
-            $post = $this->createPostAction->execute($dto, auth()->user());
+            $featuredImage = $request->hasFile('featured_image') ? $request->file('featured_image') : null;
+            $post = $this->createPostAction->execute($dto, auth()->user(), $featuredImage);
 
-            return redirect()->route("posts.show", ["id" => $post->id])
+            return redirect()->route('posts.show', ['id' => $post->id])
                 ->with('success', 'Post created successfully! 🎉');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());
@@ -65,7 +71,8 @@ class PostController extends Controller
 
         $this->authorize('update', $post);
 
-        return view('posts.edit', compact('post'));
+        $boards = Board::with('category')->orderBy('name')->get();
+        return view('posts.edit', compact('post', 'boards'));
     }
 
     public function update(PostRequest $request, $id)
@@ -80,9 +87,10 @@ class PostController extends Controller
 
         try {
             $dto = PostDTO::fromRequest($request);
-            $post = $this->updatePostAction->execute($dto, $post);
+            $featuredImage = $request->hasFile('featured_image') ? $request->file('featured_image') : null;
+            $post = $this->updatePostAction->execute($dto, $post, $featuredImage);
 
-            return redirect()->route("posts.show", ["id" => $post->id])
+            return redirect()->route('posts.show', ['id' => $post->id])
                 ->with('success', 'Post updated successfully! ✏️');
         } catch (\Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());
